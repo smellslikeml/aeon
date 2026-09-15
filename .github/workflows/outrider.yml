@@ -118,7 +118,7 @@ jobs:
             *)
               echo "ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY_SECRET" >> "$GITHUB_ENV"
               echo "base_url=" >> "$GITHUB_OUTPUT"
-              echo "timeout=900" >> "$GITHUB_OUTPUT" ;;
+              echo "timeout=3600" >> "$GITHUB_OUTPUT" ;;
           esac
           if [ -n "$MODEL" ]; then
             echo "ANTHROPIC_MODEL=$MODEL" >> "$GITHUB_ENV"
