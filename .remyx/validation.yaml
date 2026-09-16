@@ -1,0 +1,33 @@
+loop: {max_iterations: 8, fix_code: true}
+benchmarks:
+  - name: "autoplait-regime-recovery"
+    suite: "notebook:eval/eval_autoplait_regime_recovery.ipynb"
+    scorer: regime_label_match_accuracy
+    baseline: none
+    metrics:
+      - name: regime_label_match_accuracy
+        role: target
+        direction: max
+        threshold: 0.9
+      - name: cut_point_max_deviation
+        role: guardrail
+        direction: min
+        threshold: 30
+    policy: {guardrail_veto: true}
+    held_constant:
+      - "same A-B-A synthetic construction as aeon/segmentation/tests/test_autoplait.py: three segments of seg_len samples from two distinct 2-state Gaussian HMM regimes (means [-5,-2] vs [2,5], variance 0.25), regime A recurring"
+      - "same rng seed (np.random.default_rng(3)) and same AutoPlaitSegmenter(n_states=2, random_state=0) construction across runs"
+      - "min_segment scaled with seg_len (20 for the full run, 10 for smoke) so segments always exceed the minimum-segment constraint"
+    avoid:
+      - "the SIGMOD published-dataset parity check (motion capture / chlorine benchmarks) is explicitly deferred and flagged UNVERIFIED in the PR's own VALIDATION.md and is out of scope for this eval"
+      - "no external data or network calls; the series is synthesized in-script from the same closed-form protocol as the repo's own test_autoplait_recovers_regimes_and_changepoints, so wall-clock and unpinned sources are not a concern"
+    compute: {tier: cpu}
+    provenance:
+      regime_label_match_accuracy: "user_guidance"
+      cut_point_max_deviation: "claim_analysis"
+      held_constant: "repo_test:aeon/segmentation/tests/test_autoplait.py"
+      suite: "synthesized"
+      baseline: "claim_analysis (AutoPlaitSegmenter is newly added in this diff with no pre-change equivalent; the whole comparison lives inside the one arm against synthetic ground truth, per rule 1's baseline: none clause)"
+question:
+  kind: capability
+  ask: "AutoPlaitSegmenter, run with no tuned threshold (MDL selects everything), recovers the correct number of regimes and the true change-point locations on synthetic multi-regime time series with known ground truth."
