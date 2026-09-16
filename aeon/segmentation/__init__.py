@@ -13,8 +13,10 @@ __all__ = [
     "EAggloSegmenter",
     "HMMSegmenter",
     "HidalgoSegmenter",
+    "AutoPlaitSegmenter",
 ]
 
+from aeon.segmentation._autoplait import AutoPlaitSegmenter
 from aeon.segmentation._binseg import BinSegmenter
 from aeon.segmentation._clasp import ClaSPSegmenter, find_dominant_window_sizes
 from aeon.segmentation._eagglo import EAggloSegmenter
