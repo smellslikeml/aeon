@@ -61,6 +61,7 @@ Distribution-based
 
     COPOD
     DWT_MLEAD
+    ExCal
 
 Outlier-Detection
 ~~~~~~~~~~~~~~~~~
