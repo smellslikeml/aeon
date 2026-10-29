@@ -15,9 +15,8 @@ name: Outrider
 # both per run (that's how a two-tier refiner dispatches its promotions).
 
 on:
-  schedule:
-    # Daily at 14:00 UTC
-    - cron: '0 14 * * *'
+  # schedule:  # disabled: dispatch-only fork
+  #   - cron: '0 14 * * *'
   workflow_dispatch:
     inputs:
       pin-arxiv:
@@ -90,6 +89,11 @@ jobs:
     env:
       REMYX_API_KEY: ${{ secrets.REMYX_API_KEY }}
     steps:
+      - name: Refresh apt lists + pre-install poppler-utils
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends poppler-utils || true
       # Route the model backend: dispatch inputs override the baked repo
       # defaults; auth env is exclusive per provider (the action validates).
       - name: Configure provider auth
